@@ -12,8 +12,6 @@ public class VideoPlayController : MonoBehaviour
 
     private void Awake()
     {
-        Vector2 size = new Vector2(Screen.width, Screen.height);
-        (videoPlayer.transform as RectTransform).sizeDelta = size;
         videoPlayer.gameObject.SetActive(false);
 
         EventTrigger.Entry loadClick = new EventTrigger.Entry();
