@@ -22,56 +22,41 @@ public class TargetTransformController : MonoBehaviour
 	private Vector2 prevPos = new Vector2();
 	private void Awake()
 	{
-		// 右スケーラ処理
-		EventTrigger.Entry rightDown = new EventTrigger.Entry();
-		rightDown.eventID = EventTriggerType.PointerDown;
-		rightDown.callback.AddListener((data) => { OnScalerDown((PointerEventData)data); });
-		rightTrigger.triggers.Add(rightDown);
+		// 押下開始処理
+		EventTrigger.Entry onDown = new EventTrigger.Entry();
+		onDown.eventID = EventTriggerType.PointerDown;
+		onDown.callback.AddListener((data) => { OnScalerDown((PointerEventData)data); });
+		rightTrigger.triggers.Add(onDown);
+		leftTrigger.triggers.Add(onDown);
+		topTrigger.triggers.Add(onDown);
+		bottomTrigger.triggers.Add(onDown);
+		centerTrigger.triggers.Add(onDown);
 		
+		// 右スケーラ処理
 		EventTrigger.Entry rightDrag = new EventTrigger.Entry();
 		rightDrag.eventID = EventTriggerType.Drag;
 		rightDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Right); });
 		rightTrigger.triggers.Add(rightDrag);
 		
 		// 左スケーラ処理
-		EventTrigger.Entry leftDown = new EventTrigger.Entry();
-		leftDown.eventID = EventTriggerType.PointerDown;
-		leftDown.callback.AddListener((data) => { OnScalerDown((PointerEventData)data); });
-		leftTrigger.triggers.Add(leftDown);
-		
 		EventTrigger.Entry leftDrag = new EventTrigger.Entry();
 		leftDrag.eventID = EventTriggerType.Drag;
 		leftDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Left); });
 		leftTrigger.triggers.Add(leftDrag);
 		
 		// 上スケーラ処理
-		EventTrigger.Entry topDown = new EventTrigger.Entry();
-		topDown.eventID = EventTriggerType.PointerDown;
-		topDown.callback.AddListener((data) => { OnScalerDown((PointerEventData)data); });
-		topTrigger.triggers.Add(topDown);
-		
 		EventTrigger.Entry topDrag = new EventTrigger.Entry();
 		topDrag.eventID = EventTriggerType.Drag;
 		topDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Top); });
 		topTrigger.triggers.Add(topDrag);
 		
 		// 下スケーラ処理
-		EventTrigger.Entry bottomDown = new EventTrigger.Entry();
-		bottomDown.eventID = EventTriggerType.PointerDown;
-		bottomDown.callback.AddListener((data) => { OnScalerDown((PointerEventData)data); });
-		bottomTrigger.triggers.Add(bottomDown);
-		
 		EventTrigger.Entry bottomDrag = new EventTrigger.Entry();
 		bottomDrag.eventID = EventTriggerType.Drag;
 		bottomDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Bottom); });
 		bottomTrigger.triggers.Add(bottomDrag);
 		
 		// 中心移動処理
-		EventTrigger.Entry down = new EventTrigger.Entry();
-		down.eventID = EventTriggerType.PointerDown;
-		down.callback.AddListener((data) => { OnScalerDown((PointerEventData)data); });
-		centerTrigger.triggers.Add(down);
-		
 		EventTrigger.Entry drag = new EventTrigger.Entry();
 		drag.eventID = EventTriggerType.Drag;
 		drag.callback.AddListener((data) => { OnCenterDrag((PointerEventData)data); });
