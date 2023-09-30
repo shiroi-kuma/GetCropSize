@@ -12,7 +12,7 @@ public class VideoPlayController : MonoBehaviour
 
     private void Awake()
     {
-        videoPlayer.gameObject.SetActive(false);
+        // videoPlayer.gameObject.SetActive(false);
 
         EventTrigger.Entry loadClick = new EventTrigger.Entry();
         loadClick.eventID = EventTriggerType.PointerClick;
@@ -26,21 +26,24 @@ public class VideoPlayController : MonoBehaviour
         if (NativeGallery.IsMediaPickerBusy())
             return;
         
-        videoPlayer.gameObject.SetActive(true);
+        // videoPlayer.gameObject.SetActive(true);
         
         NativeGallery.Permission permission = NativeGallery.GetVideoFromGallery((path) =>
         {
             if (path != null)
             {
                 // 動画サイズを取得する
-                // NativeGallery.VideoProperties properties = NativeGallery.GetVideoProperties(path);
-                // Vector2 size = new Vector2(properties.width, properties.height);
-                // (videoPlayer.transform as RectTransform).sizeDelta = size;
-                // Debug.Log(size);
+                NativeGallery.VideoProperties properties = NativeGallery.GetVideoProperties(path);
+                Vector2 size = new Vector2(properties.width, properties.height);
+                Debug.Log($"movieSize:{size}");
                 
+                Debug.Log($"beforeSize:({(videoPlayer.transform as RectTransform).sizeDelta.x},{(videoPlayer.transform as RectTransform).sizeDelta.y})");
+                Debug.Log($"beforeScale:({(videoPlayer.transform as RectTransform).localScale.x},{(videoPlayer.transform as RectTransform).localScale.y})");
                 // 動画の再生
                 videoPlayer.url = path;
                 videoPlayer.Play();
+                Debug.Log($"afterSize:({(videoPlayer.transform as RectTransform).sizeDelta.x},{(videoPlayer.transform as RectTransform).sizeDelta.y})");
+                Debug.Log($"afterScale:({(videoPlayer.transform as RectTransform).localScale.x},{(videoPlayer.transform as RectTransform).localScale.y})");
             }
         }, "Select a video" );
     }

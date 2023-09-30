@@ -19,6 +19,7 @@ public class GetSizeController : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"ScreenSize:({Screen.width},{Screen.height})");
         CacheTransform();
         UpdateText(cacheSize, cachePos);
     }
