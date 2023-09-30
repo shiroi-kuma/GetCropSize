@@ -12,6 +12,13 @@ public class TargetTransformController : MonoBehaviour
 	[SerializeField] private EventTrigger bottomTrigger;
 
 	private const float MIN_SIZE = 120.0f;
+	private enum ScalerType
+	{
+		Top = 1,
+		Left = 2,
+		Right = 3,
+		Bottom = 4,
+	}
 	private Vector2 prevPos = new Vector2();
 	private void Awake()
 	{
@@ -23,7 +30,7 @@ public class TargetTransformController : MonoBehaviour
 		
 		EventTrigger.Entry rightDrag = new EventTrigger.Entry();
 		rightDrag.eventID = EventTriggerType.Drag;
-		rightDrag.callback.AddListener((data) => { OnRightDrag((PointerEventData)data); });
+		rightDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Right); });
 		rightTrigger.triggers.Add(rightDrag);
 		
 		// 左スケーラ処理
@@ -34,7 +41,7 @@ public class TargetTransformController : MonoBehaviour
 		
 		EventTrigger.Entry leftDrag = new EventTrigger.Entry();
 		leftDrag.eventID = EventTriggerType.Drag;
-		leftDrag.callback.AddListener((data) => { OnLeftDrag((PointerEventData)data); });
+		leftDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Left); });
 		leftTrigger.triggers.Add(leftDrag);
 		
 		// 上スケーラ処理
@@ -45,7 +52,7 @@ public class TargetTransformController : MonoBehaviour
 		
 		EventTrigger.Entry topDrag = new EventTrigger.Entry();
 		topDrag.eventID = EventTriggerType.Drag;
-		topDrag.callback.AddListener((data) => { OnTopDrag((PointerEventData)data); });
+		topDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Top); });
 		topTrigger.triggers.Add(topDrag);
 		
 		// 下スケーラ処理
@@ -56,7 +63,7 @@ public class TargetTransformController : MonoBehaviour
 		
 		EventTrigger.Entry bottomDrag = new EventTrigger.Entry();
 		bottomDrag.eventID = EventTriggerType.Drag;
-		bottomDrag.callback.AddListener((data) => { OnBottomDrag((PointerEventData)data); });
+		bottomDrag.callback.AddListener((data) => { OnScalerDrag((PointerEventData)data, ScalerType.Bottom); });
 		bottomTrigger.triggers.Add(bottomDrag);
 		
 		// 中心移動処理
@@ -75,76 +82,42 @@ public class TargetTransformController : MonoBehaviour
 	{
 		prevPos = data.position;
 	}
-	
-	private void OnRightDrag(PointerEventData data)
+
+	private void OnScalerDrag(PointerEventData data, ScalerType type)
 	{
 		Vector2 deltaPos = data.position - prevPos;
-		Vector2 newScale = (transform as RectTransform).sizeDelta;
-		newScale.x += deltaPos.x;
-		
-		// 辺の長さが最低値を切るようであれば終了
-		if (newScale.x < MIN_SIZE) return;
-		
-		(transform as RectTransform).sizeDelta = newScale;
+		RectTransform rectTrans = transform as RectTransform;
+		Vector2 newScale = rectTrans.sizeDelta;
+		Vector2 newPos = transform.position;
 
-		Vector2 targetPos = transform.position;
-		targetPos.x += deltaPos.x / 2;
-		transform.position = targetPos;
-		
-		prevPos = data.position;
-	}
-	
-	private void OnLeftDrag(PointerEventData data)
-	{
-		Vector2 deltaPos = data.position - prevPos;
-		Vector2 newScale = (transform as RectTransform).sizeDelta;
-		newScale.x -= deltaPos.x;
-		
-		// 辺の長さが最低値を切るようであれば終了
-		if (newScale.x < MIN_SIZE) return;
-		
-		(transform as RectTransform).sizeDelta = newScale;
+		switch (type)
+		{
+			case ScalerType.Right:
+				newScale.x += deltaPos.x;
+				newPos.x += deltaPos.x / 2;
+				break;
+			case ScalerType.Left:
+				newScale.x -= deltaPos.x;
+				newPos.x += deltaPos.x / 2;
+				break;
+			case ScalerType.Top:
+				newScale.y += deltaPos.y;
+				newPos.y += deltaPos.y / 2;
+				break;
+			case ScalerType.Bottom:
+				newScale.y -= deltaPos.y;
+				newPos.y += deltaPos.y / 2;
+				break;
+		}
 
-		Vector2 targetPos = transform.position;
-		targetPos.x += deltaPos.x / 2;
-		transform.position = targetPos;
-		
-		prevPos = data.position;
-	}
-	
-	private void OnTopDrag(PointerEventData data)
-	{
-		Vector2 deltaPos = data.position - prevPos;
-		Vector2 newScale = (transform as RectTransform).sizeDelta;
-		newScale.y += deltaPos.y;
-		
 		// 辺の長さが最低値を切るようであれば終了
-		if (newScale.y < MIN_SIZE) return;
+		if (newScale.x < MIN_SIZE || newScale.y < MIN_SIZE) return;
 		
-		(transform as RectTransform).sizeDelta = newScale;
-
-		Vector2 targetPos = transform.position;
-		targetPos.y += deltaPos.y / 2;
-		transform.position = targetPos;
+		// 値設定
+		rectTrans.sizeDelta = newScale;
+		transform.position = newPos;
 		
-		prevPos = data.position;
-	}
-	
-	private void OnBottomDrag(PointerEventData data)
-	{
-		Vector2 deltaPos = data.position - prevPos;
-		Vector2 newScale = (transform as RectTransform).sizeDelta;
-		newScale.y -= deltaPos.y;
-		
-		// 辺の長さが最低値を切るようであれば終了
-		if (newScale.y < MIN_SIZE) return;
-		
-		(transform as RectTransform).sizeDelta = newScale;
-
-		Vector2 targetPos = transform.position;
-		targetPos.y += deltaPos.y / 2;
-		transform.position = targetPos;
-		
+		// キャッシュ
 		prevPos = data.position;
 	}
 	
