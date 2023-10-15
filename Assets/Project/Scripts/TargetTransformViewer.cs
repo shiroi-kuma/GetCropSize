@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
-public class GetSizeController : MonoBehaviour
+public class TargetTransformViewer : MonoBehaviour
 {
-    [FormerlySerializedAs("targetImage")]
     [SerializeField]
     private RectTransform targetRectTrans;
 
@@ -17,9 +12,24 @@ public class GetSizeController : MonoBehaviour
     private Vector2 cacheSize = Vector2.zero;
     private Vector2 cachePos = Vector2.zero;
 
+    private float widthScale = 1f;
+    private float heightScale = 1f;
+
+    private bool isScaleChanged;
+
+    public void SetScreenScale(float width, float height)
+    {
+        if (Screen.width != 0 || Screen.height != 0 || width != 0 || height != 0)
+        {
+            widthScale = width / Screen.width;
+            heightScale = height / Screen.height;
+
+            isScaleChanged = true;
+        }
+    }
+
     private void Awake()
     {
-        Debug.Log($"ScreenSize:({Screen.width},{Screen.height})");
         CacheTransform();
         UpdateText(cacheSize, cachePos);
     }
@@ -34,8 +44,9 @@ public class GetSizeController : MonoBehaviour
         targetRectTrans.GetWorldCorners(corners);
         isDiff |= cachePos != (Vector2)corners[1];
 
-        if (isDiff)
+        if (isDiff || isScaleChanged)
         {
+            isScaleChanged = false;
             CacheTransform();
             UpdateText(targetRectTrans.sizeDelta, corners[1]);
         }
@@ -52,8 +63,8 @@ public class GetSizeController : MonoBehaviour
 
     private void UpdateText(Vector2 size, Vector2 pos)
     {
-        string text = $"width:{Mathf.RoundToInt(size.x)}, height:{Mathf.RoundToInt(size.y)}\n" +
-            $"x:{Mathf.RoundToInt(pos.x)}, y:{Mathf.RoundToInt(Screen.height - pos.y)}";
+        string text = $"width:{Mathf.RoundToInt(size.x * widthScale)}, height:{Mathf.RoundToInt(size.y * heightScale)}\n" +
+            $"x:{Mathf.RoundToInt(pos.x * widthScale)}, y:{Mathf.RoundToInt((Screen.height - pos.y) * heightScale)}";
         textUi.SetText(text);
     }
 }
