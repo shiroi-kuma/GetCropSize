@@ -37,13 +37,9 @@ public class VideoPlayController : MonoBehaviour
                 Vector2 size = new Vector2(properties.width, properties.height);
                 Debug.Log($"movieSize:{size}");
                 
-                Debug.Log($"beforeSize:({(videoPlayer.transform as RectTransform).sizeDelta.x},{(videoPlayer.transform as RectTransform).sizeDelta.y})");
-                Debug.Log($"beforeScale:({(videoPlayer.transform as RectTransform).localScale.x},{(videoPlayer.transform as RectTransform).localScale.y})");
                 // 動画の再生
                 videoPlayer.url = path;
                 videoPlayer.Play();
-                Debug.Log($"afterSize:({(videoPlayer.transform as RectTransform).sizeDelta.x},{(videoPlayer.transform as RectTransform).sizeDelta.y})");
-                Debug.Log($"afterScale:({(videoPlayer.transform as RectTransform).localScale.x},{(videoPlayer.transform as RectTransform).localScale.y})");
             }
         }, "Select a video" );
     }
